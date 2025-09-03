@@ -20,7 +20,7 @@ ensure_gr() {
     printf "\x1b[34mInstalling gr@%s...\x1b[39m\n" "$GR_REV"
   fi
 
-  mkdir -p "$GR_CACHE_DIR/$GR_REV"
+  mkdir -p "$GR_REV_CACHE_DIR"
   GOOS= GOARCH= CGO_ENABLED=0 GOBIN="$GR_REV_CACHE_DIR" go install github.com/dottedmag/gr@$GR_REV
 
   if [ "$GR_VERBOSE" != "" ]; then
