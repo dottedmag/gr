@@ -1,0 +1,35 @@
+#!/bin/sh
+set -e
+
+GR_REV=v0.2.0
+GR_CACHE_DIR=${XDG_CACHE_DIR:-$HOME/.cache}/gr
+
+# Go binary to bulid gr itself
+GR_GO=go
+
+# set to non-empty string to let gr output its process to stderr
+GR_VERBOSE=yes
+
+# -- no serviceable parts below --
+
+GR_REV_CACHE_DIR="$GR_CACHE_DIR/bin/$GR_REV"
+GR_REV_BIN="$GR_CACHE_DIR/bin/$GR_REV/gr"
+
+ensure_gr() {
+  if [ "$GR_VERBOSE" != "" ]; then
+    printf "\x1b[34mInstalling gr@%s...\x1b[39m\n" "$GR_REV"
+  fi
+
+  mkdir -p "$GR_CACHE_DIR/$GR_REV"
+  GOOS= GOARCH= CGO_ENABLED=0 GOBIN="$GR_REV_CACHE_DIR" go install github.com/dottedmag/gr@$GR_REV
+
+  if [ "$GR_VERBOSE" != "" ]; then
+    printf "\x1b[34mInstalled gr@%s\x1b[39m\n" "$GR_REV"
+  fi
+}
+
+if ! [ -f "$GR_REV_BIN" ]; then
+    ensure_gr
+fi
+
+GR_CACHE_DIR="$GR_CACHE_DIR" exec "$GR_REV_BIN" "$@"
