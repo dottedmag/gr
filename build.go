@@ -41,6 +41,9 @@ func cacheCleanup(packageCachePath string) error {
 	var cacheContents []cacheEntry
 
 	for _, de := range des {
+		if de.IsDir() {
+			continue
+		}
 		fi, err := de.Info()
 		if err != nil {
 			if os.IsNotExist(err) {
